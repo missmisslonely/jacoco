@@ -82,9 +82,13 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	// === Scenario: linear Sequence without branches ===
 
 	private void createLinearSequence() {
-		method.visitLineNumber(1001, new Label());
+		final Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitLineNumber(1001, l0);
 		method.visitInsn(Opcodes.NOP);
-		method.visitLineNumber(1002, new Label());
+		final Label l1 = new Label();
+		method.visitLabel(l1);
+		method.visitLineNumber(1002, l1);
 		method.visitInsn(Opcodes.RETURN);
 	}
 
@@ -122,11 +126,15 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	// === Scenario: simple if branch ===
 
 	private void createIfBranch() {
-		method.visitLineNumber(1001, new Label());
+		final Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitLineNumber(1001, l0);
 		method.visitVarInsn(Opcodes.ILOAD, 1);
 		Label l1 = new Label();
 		method.visitJumpInsn(Opcodes.IFEQ, l1);
-		method.visitLineNumber(1002, new Label());
+		final Label l2 = new Label();
+		method.visitLabel(l2);
+		method.visitLineNumber(1002, l2);
 		method.visitLdcInsn("a");
 		method.visitInsn(Opcodes.ARETURN);
 		method.visitLabel(l1);
@@ -183,11 +191,15 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	// === Scenario: branch which merges back ===
 
 	private void createIfBranchMerge() {
-		method.visitLineNumber(1001, new Label());
+		final Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitLineNumber(1001, l0);
 		method.visitVarInsn(Opcodes.ILOAD, 1);
 		Label l1 = new Label();
 		method.visitJumpInsn(Opcodes.IFEQ, l1);
-		method.visitLineNumber(1002, new Label());
+		final Label l2 = new Label();
+		method.visitLabel(l2);
+		method.visitLineNumber(1002, l2);
 		method.visitInsn(Opcodes.NOP);
 		method.visitLabel(l1);
 		method.visitLineNumber(1003, l1);
@@ -243,7 +255,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	// === Scenario: branch which jump backwards ===
 
 	private void createJumpBackwards() {
-		method.visitLineNumber(1001, new Label());
+		final Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitLineNumber(1001, l0);
 		final Label l1 = new Label();
 		method.visitJumpInsn(Opcodes.GOTO, l1);
 		final Label l2 = new Label();
@@ -329,7 +343,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	// === Scenario: table switch ===
 
 	private void createTableSwitch() {
-		method.visitLineNumber(1001, new Label());
+		final Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitLineNumber(1001, l0);
 		method.visitVarInsn(Opcodes.ILOAD, 1);
 		Label l1 = new Label();
 		Label l2 = new Label();
@@ -339,14 +355,18 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 		method.visitLineNumber(1002, l1);
 		method.visitIntInsn(Opcodes.BIPUSH, 11);
 		method.visitVarInsn(Opcodes.ISTORE, 2);
-		method.visitLineNumber(1003, new Label());
+		final Label l4 = new Label();
+		method.visitLabel(l4);
+		method.visitLineNumber(1003, l4);
 		Label l5 = new Label();
 		method.visitJumpInsn(Opcodes.GOTO, l5);
 		method.visitLabel(l2);
 		method.visitLineNumber(1004, l2);
 		method.visitIntInsn(Opcodes.BIPUSH, 22);
 		method.visitVarInsn(Opcodes.ISTORE, 2);
-		method.visitLineNumber(1005, new Label());
+		final Label l6 = new Label();
+		method.visitLabel(l6);
+		method.visitLineNumber(1005, l6);
 		method.visitJumpInsn(Opcodes.GOTO, l5);
 		method.visitLabel(l3);
 		method.visitLineNumber(1006, l3);
@@ -429,10 +449,14 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	// === Scenario: table switch with merge ===
 
 	private void createTableSwitchMerge() {
-		method.visitLineNumber(1001, new Label());
+		final Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitLineNumber(1001, l0);
 		method.visitInsn(Opcodes.ICONST_0);
 		method.visitVarInsn(Opcodes.ISTORE, 2);
-		method.visitLineNumber(1002, new Label());
+		final Label l1 = new Label();
+		method.visitLabel(l1);
+		method.visitLineNumber(1002, l1);
 		method.visitVarInsn(Opcodes.ILOAD, 1);
 		Label l2 = new Label();
 		Label l3 = new Label();
