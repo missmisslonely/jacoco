@@ -12,14 +12,18 @@
 package org.jacoco.core.internal.analysis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jacoco.core.analysis.ILine;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.internal.flow.IProbeIdGenerator;
 import org.jacoco.core.internal.flow.LabelFlowAnalyzer;
 import org.jacoco.core.internal.flow.MethodProbesAdapter;
+import org.jacoco.core.internal.instr.InstrSupport;
 import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.asm.Label;
@@ -43,7 +47,30 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 	@Before
 	public void setup() {
 		nextProbeId = 0;
-		method = new MethodNode();
+		method = new MethodNode(InstrSupport.ASM_API_VERSION) {
+			private final Set<Label> visitedLabels = new HashSet<Label>();
+
+			@Override
+			public void visitLabel(final Label label) {
+				visitedLabels.add(label);
+				super.visitLabel(label);
+			}
+
+			/**
+			 * Verifies that this test does not violate contract of ASM API. See
+			 * {@link org.objectweb.asm.MethodVisitor} that states:
+			 * <blockquote>{@link MethodNode#visitLineNumber(int, Label)}
+			 * methods must be called after the labels passed as arguments have
+			 * been {@link MethodNode#visitLabel(Label) visited}</blockquote>
+			 * i.e. that this test simulates behavior which is the same (in
+			 * respect to these methods) as when reading from bytecode.
+			 */
+			@Override
+			public void visitLineNumber(final int line, final Label start) {
+				assertTrue(visitedLabels.contains(start));
+				super.visitLineNumber(line, start);
+			}
+		};
 		method.tryCatchBlocks = new ArrayList<TryCatchBlockNode>();
 		probes = new boolean[32];
 	}
